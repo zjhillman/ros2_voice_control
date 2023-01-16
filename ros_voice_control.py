@@ -57,7 +57,7 @@ class ASRControl(object):
             if buf:
                 self.decoder.process_raw(buf, False, False)
             else:
-                rclpy.shutdown(self.node)
+                rclpy.shutdown()
                 break
             self.parse_asr_result()
 
@@ -106,28 +106,15 @@ class ASRControl(object):
 
         self.node.pub.publish(self.msg)
 
-    def shutdown(self):
-        """
-        command executed after Ctrl+C is pressed
-        """
-        self.node.get_logger().info("Shutting down SphinxNode...")
-        self.node.loginfo("Stop ASRControl")
-        self.node.pub_.publish(Twist())
-        self.node.sleep(1)
-
-def main(args):
+def main():
     rclpy.init(args=None)
 	
-    ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
-	
-
-if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Control ROS turtlebot using pocketsphinx.')
     parser.add_argument('--model', type=str,
-        default='/usr/share/pocketsphinx/model/en-us/en-us',
+        default=get_model_path('en-us')  +  '/en-us',
         help='''acoustic model path
-        (default: /usr/share/pocketsphinx/model/en-us/en-us''')
+        (default: en-us''')
     parser.add_argument('--lexicon', type=str,
         default='voice_cmd.dic',
         help='''pronunciation dictionary
@@ -139,9 +126,11 @@ if __name__ == '__main__':
     parser.add_argument('--rospub', type=str,
         default='turtle1/cmd_vel',
         help='''ROS publisher destination
-        (default: turtle1/cmd_vel)''')
-        # old mobile_base/commands/velocity
-
+        (default: turtle1/cmd_vel)''')  # old mobile_base/commands/velocit
     args = parser.parse_args()
 
-    main(args)
+    ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
+	
+
+if __name__ == '__main__':
+    main()
