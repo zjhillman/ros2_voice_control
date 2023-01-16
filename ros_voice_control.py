@@ -43,6 +43,7 @@ class ASRControl(object):
 
         # initialize pocketsphinx
         config = Config(hmm=model, dict=lexicon, kws=kwlist)
+        print(config.dumps())
 
         stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1,
                         rate=16000, input=True, frames_per_buffer=1024)
