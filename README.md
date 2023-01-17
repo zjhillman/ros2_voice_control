@@ -6,7 +6,7 @@ ROS2 Voice Controller is a python script that publishes commands under ROS2 and 
 ### Linux Dependencies
 Use the following commands to ensure you have the following python packages installed
 ```
-sudo apt install python3
+sudo apt install python3 cython3
 sudo apt-get install python3-pip python3-pyaudio
 pip3 install pocketsphinx
 ```
