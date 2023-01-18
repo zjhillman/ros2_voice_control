@@ -5,16 +5,16 @@ for ROS turtlebot using pocketsphinx
 """
 
 import argparse
-
-from geometry_msgs.msg import Twist
+import pyaudio
+import time
 
 import rclpy
 from rclpy.node import Node
 
+from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 
 from pocketsphinx import *
-import pyaudio
 
 class SphinxNode(Node):
     def __init__(self):
@@ -35,7 +35,6 @@ class ASRControl(object):
         # initialize ROS
         self.speed = 0.2
         self.msg = Twist()
-
         self.node = SphinxNode()
 
         # you may need to change publisher destination depending on what you run
@@ -43,7 +42,6 @@ class ASRControl(object):
 
         # initialize pocketsphinx
         config = Config(hmm=model, dict=lexicon, kws=kwlist)
-        print(config.dumps())
 
         stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1,
                         rate=16000, input=True, frames_per_buffer=1024)
@@ -57,7 +55,6 @@ class ASRControl(object):
             if buf:
                 self.decoder.process_raw(buf, False, False)
             else:
-                rclpy.shutdown()
                 break
             self.parse_asr_result()
 
@@ -104,6 +101,7 @@ class ASRControl(object):
                 elif seg.word.find("stop") > -1 or seg.word.find("halt") > -1:
                     self.msg = Twist()
 
+        time.sleep(2)
         self.node.pub.publish(self.msg)
 
 def main():
@@ -131,6 +129,7 @@ def main():
 
     ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
 	
+    rclpy.shutdown()
 
 if __name__ == '__main__':
     main()
