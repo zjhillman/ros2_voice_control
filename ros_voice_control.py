@@ -16,11 +16,6 @@ from std_msgs.msg import String
 
 from pocketsphinx import *
 
-class SphinxNode(Node):
-    def __init__(self):
-        super().__init__('voice_cmd_vel')
-        self.get_logger().info('SphinxNode has been started')
-
 class ASRControl(object):
     """Simple voice control interface for ROS turtlebot
 
@@ -35,7 +30,8 @@ class ASRControl(object):
         # initialize ROS
         self.speed = 0.2
         self.msg = Twist()
-        self.node = SphinxNode()
+        self.node = rclpy.create_node('voice_cmd_vel')
+        self.node.get_logger().info('SphinxNode has been started')
 
         # you may need to change publisher destination depending on what you run
         self.node.pub = self.node.create_publisher(Twist, pub, 10)
