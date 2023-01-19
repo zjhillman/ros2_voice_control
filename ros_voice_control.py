@@ -31,7 +31,7 @@ class ASRControl(object):
         self.speed = 0.2
         self.msg = Twist()
         self.node = rclpy.create_node('voice_cmd_vel')
-        self.node.get_logger().info('SphinxNode has been started')
+        self.node.get_logger().info('voice_cmd_vel has been started')
 
         # you may need to change publisher destination depending on what you run
         self.node.pub = self.node.create_publisher(Twist, pub, 10)
@@ -39,15 +39,17 @@ class ASRControl(object):
         # initialize pocketsphinx
         config = Config(hmm=model, dict=lexicon, kws=kwlist)
 
-        stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1,
+        self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1,
                         rate=16000, input=True, frames_per_buffer=1024)
-        stream.start_stream()
 
         self.decoder = Decoder(config)
+
+    def decode_asr(self):
+        self.stream.start_stream()
         self.decoder.start_utt()
 
         while True:
-            buf = stream.read(1024)
+            buf = self.stream.read(1024)
             if buf:
                 self.decoder.process_raw(buf, False, False)
             else:
@@ -97,7 +99,6 @@ class ASRControl(object):
                 elif seg.word.find("stop") > -1 or seg.word.find("halt") > -1:
                     self.msg = Twist()
 
-        time.sleep(2)
         self.node.pub.publish(self.msg)
 
 def main():
@@ -123,8 +124,9 @@ def main():
         (default: turtle1/cmd_vel)''')  # old mobile_base/commands/velocit
     args = parser.parse_args()
 
-    ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
-	
+    asr = ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
+	asr.decode_asr()
+
     rclpy.shutdown()
 
 if __name__ == '__main__':
