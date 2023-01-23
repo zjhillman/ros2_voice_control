@@ -16,11 +16,6 @@ from std_msgs.msg import String
 
 from pocketsphinx import *
 
-class SphinxNode(Node):
-    def __init__(self):
-        super().__init__('voice_cmd_vel')
-        self.get_logger().info('SphinxNode has been started')
-
 class ASRControl(object):
     """Simple voice control interface for ROS turtlebot
 
@@ -35,28 +30,34 @@ class ASRControl(object):
         # initialize ROS
         self.speed = 0.2
         self.msg = Twist()
-        self.node = SphinxNode()
+        self.name = 'voice_cmd_vel'
+        self.node = rclpy.create_node(self.name)
+        self.node.get_logger().info(f'{self.name} has been started')
 
         # you may need to change publisher destination depending on what you run
-        self.node.pub = self.node.create_publisher(Twist, pub, 10)
+        self.node.pub_ = self.node.create_publisher(Twist, pub, 10)
 
         # initialize pocketsphinx
         config = Config(hmm=model, dict=lexicon, kws=kwlist)
 
-        stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1,
+        self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1,
                         rate=16000, input=True, frames_per_buffer=1024)
-        stream.start_stream()
 
         self.decoder = Decoder(config)
+
+    def decode_asr(self):
+        self.stream.start_stream()
         self.decoder.start_utt()
 
         while True:
-            buf = stream.read(1024)
+            buf = self.stream.read(1024)
             if buf:
                 self.decoder.process_raw(buf, False, False)
             else:
                 break
             self.parse_asr_result()
+        
+        self.node.destroy_node()
 
     def parse_asr_result(self):
         """
@@ -64,11 +65,14 @@ class ASRControl(object):
         """
         if self.decoder.hyp() != None:
             for seg in self.decoder.seg():
-                print ([(seg.word, seg.prob, seg.start_frame, seg.end_frame)])
-                print ("Detected keyphrase, restarting search")
+                print ([seg.word, seg.prob, seg.start_frame, seg.end_frame], end='')
+                print (" Detected keyphrase")
                 seg.word = seg.word.lower()
                 self.decoder.end_utt()
                 self.decoder.start_utt()
+                print("[INFO] [decoder] new utterance started")
+                print(f"[INFO] [msg] {self.msg}")
+                print(f"[INFO] [speed]] {self.speed}")
                 # you may want to modify the main logic here
                 if seg.word.find("full speed") > -1:
                     if self.speed == 0.2:
@@ -96,13 +100,19 @@ class ASRControl(object):
                     else:
                         self.msg.angular.z = -self.speed*2
                 elif seg.word.find("back") > -1:
-                    self.msg.linear.x = -self.speed
-                    self.msg.angular.z = 0.0
+                    if self.msg.linear.x > 0:
+                        self.msg.linear.x = -self.speed
+                        print("[LOGGER]")
+                        self.msg.angular.z = 0.0
                 elif seg.word.find("stop") > -1 or seg.word.find("halt") > -1:
                     self.msg = Twist()
+            
+            self.node.get_logger().info(f"publishing command: {seg.word}")
+            self.node.pub_.publish(self.msg)
+            self.node.get_logger().info(f"msg published")
 
-        time.sleep(2)
-        self.node.pub.publish(self.msg)
+        
+        
 
 def main():
     rclpy.init(args=None)
@@ -127,8 +137,9 @@ def main():
         (default: turtle1/cmd_vel)''')  # old mobile_base/commands/velocit
     args = parser.parse_args()
 
-    ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
-	
+    asr = ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
+    asr.decode_asr()
+
     rclpy.shutdown()
 
 if __name__ == '__main__':
