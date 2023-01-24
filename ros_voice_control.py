@@ -6,7 +6,7 @@ for ROS turtlebot using pocketsphinx
 
 import argparse
 import pyaudio
-import time
+import threading
 
 import rclpy
 from rclpy.node import Node
@@ -18,13 +18,11 @@ from pocketsphinx import *
 
 class ASRControl(object):
     """Simple voice control interface for ROS turtlebot
-
     Attributes:
         model: model path
         lexicon: pronunciation dictionary
         kwlist: keyword list file
         pub: where to send commands (default: 'mobile_base/commands/velocity')
-
     """
     def __init__(self, model, lexicon, kwlist, pub):
         # initialize ASR Object
@@ -37,7 +35,7 @@ class ASRControl(object):
         self.node.pub_ = self.node.create_publisher(Twist, pub, 10)
 
         # create a rate object at 5Hz
-        self.rate = self.node.create_rate(5)
+        #self.rate = self.node.create_rate(5)
 
         # initialize Twist message and set to 'stop' by default
         self.msg = Twist()
@@ -56,15 +54,13 @@ class ASRControl(object):
         self.stream.start_stream()
         self.decoder.start_utt()
 
-        while True:
+        while rclpy.ok():
             buf = self.stream.read(1024)
             if buf:
                 self.decoder.process_raw(buf, False, False)
             else:
                 break
             self.parse_asr_result()
-        
-        self.node.destroy_node()
 
     def parse_asr_result(self):
         """
@@ -72,14 +68,13 @@ class ASRControl(object):
         """
         if self.decoder.hyp() != None:
             for seg in self.decoder.seg():
-                print ([seg.word, seg.prob, seg.start_frame, seg.end_frame], end='')
-                print (" Detected keyphrase")
+                print (f"\n[DECODER] Detected {seg.word}, {seg.prob}%, {seg.start_frame}, {seg.end_frame}")
                 seg.word = seg.word.lower()
                 self.decoder.end_utt()
                 self.decoder.start_utt()
-                print("[INFO] [decoder] new utterance started")
-                print(f"[INFO] [msg] {self.msg}")
-                print(f"[INFO] [speed] {self.speed}")
+                print("[DECODER] new utterance started")
+                print(f"[DECODER] Old msg: {self.msg}")
+                print(f"[INFO] speed: {self.speed}")
                 # you may want to modify the main logic here
                 if seg.word.find("full speed") > -1:
                     if self.speed == 0.2:
@@ -113,10 +108,10 @@ class ASRControl(object):
                         self.msg.angular.z = 0.0
                 elif seg.word.find("stop") > -1:
                     self.msg = Twist()
+                print(f"[DECODER] New msg: {self.msg}")
             
-            self.node.get_logger().info(f"publishing command: {seg.word}")
-            self.node.pub_.publish(self.msg)
-            self.node.get_logger().info(f"msg published")
+        self.node.pub_.publish(self.msg)
+        # self.node.get_logger().info("msg published")
 
         
         
@@ -149,10 +144,9 @@ def main():
         asr.decode_asr()
         # rclpy.spin(asr.node)
     except Exception as exception:
-        print(exception)
-    else:
-        asr.node.destroy_node()
-
+        print("Error running decode_asr()"))
+    
+    asr.node.destroy_node()
     rclpy.shutdown()
 
 if __name__ == '__main__':
