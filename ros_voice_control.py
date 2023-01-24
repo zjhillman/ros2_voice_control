@@ -27,15 +27,22 @@ class ASRControl(object):
 
     """
     def __init__(self, model, lexicon, kwlist, pub):
-        # initialize ROS
+        # initialize ASR Object
         self.speed = 0.2
-        self.msg = Twist()
         self.name = 'voice_cmd_vel'
         self.node = rclpy.create_node(self.name)
         self.node.get_logger().info(f'{self.name} has been started')
 
-        # you may need to change publisher destination depending on what you run
+        # create publisher & subscriber
         self.node.pub_ = self.node.create_publisher(Twist, pub, 10)
+
+        # create a rate object at 5Hz
+        self.rate = self.node.create_rate(5)
+
+        # initialize Twist message and set to 'stop' by default
+        self.msg = Twist()
+        self.msg.linear.x=0.0
+        self.msg.angular.z=0.0
 
         # initialize pocketsphinx
         config = Config(hmm=model, dict=lexicon, kws=kwlist)
@@ -72,7 +79,7 @@ class ASRControl(object):
                 self.decoder.start_utt()
                 print("[INFO] [decoder] new utterance started")
                 print(f"[INFO] [msg] {self.msg}")
-                print(f"[INFO] [speed]] {self.speed}")
+                print(f"[INFO] [speed] {self.speed}")
                 # you may want to modify the main logic here
                 if seg.word.find("full speed") > -1:
                     if self.speed == 0.2:
@@ -104,7 +111,7 @@ class ASRControl(object):
                         self.msg.linear.x = -self.speed
                         print("[LOGGER]")
                         self.msg.angular.z = 0.0
-                elif seg.word.find("stop") > -1 or seg.word.find("halt") > -1:
+                elif seg.word.find("stop") > -1:
                     self.msg = Twist()
             
             self.node.get_logger().info(f"publishing command: {seg.word}")
@@ -137,8 +144,14 @@ def main():
         (default: turtle1/cmd_vel)''')  # old mobile_base/commands/velocit
     args = parser.parse_args()
 
-    asr = ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
-    asr.decode_asr()
+    try:
+        asr = ASRControl(args.model, args.lexicon, args.kwlist, args.rospub)
+        asr.decode_asr()
+        # rclpy.spin(asr.node)
+    except Exception as exception:
+        print(exception)
+    else:
+        asr.node.destroy_node()
 
     rclpy.shutdown()
 
