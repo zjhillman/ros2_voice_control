@@ -1,4 +1,4 @@
-# ros2_voice_controller
+# ***OUTDATED*** ros2_voice_controller
 ROS2 Voice Controller is a python script that publishes commands under ROS2 and uses pocketsphinx 5.0.0 to give commands in English.
 
 ## Install Dependencies
