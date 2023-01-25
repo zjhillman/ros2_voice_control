@@ -24,24 +24,25 @@ from pocketsphinx import *
 
 
 class VoiceDetector(object):
-
+    """
+    VoiceDetector uses pyaudio and pocketsphinx to listen for live input and supports
+    custom language models, command lists, and topics to publish to.
+    """
     def __init__(self, model, lexicon, kwlist, pub):
         self.node = rclpy.create_node('Voice_Detector')
         self.node.publisher_ = self.node.create_publisher(String, 'voice_commands', 10)
-        timer_period = 0.01  # seconds
-        #self.node.timer = self.node.create_timer(timer_period, self.timer_callback)
-        self.speed = 0.2
         self.msg = String()
 
-        # get file locations of dict and kwslist files
+        # init pocketsphinx
         config = Config(hmm = model, dict = lexicon, kws = kwlist)
+        self.decoder = Decoder(config)
 
+        # init pyaudio
         self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1,
                         rate=16000, input=True, frames_per_buffer=1024)
 
-        self.decoder = Decoder(config)
-
-    def timer_callback(self):
+    def decode_voice(self):
+        # start pocketsphinx and pyaudio
         self.stream.start_stream()
         self.decoder.start_utt()
 
@@ -52,16 +53,14 @@ class VoiceDetector(object):
             else:
                 break
 
-            temphyp = self.decoder.hyp()
-            if temphyp != None:
-                print(f"\n{temphyp.hypstr}\n")
+            hypothesis = self.decoder.hyp()
+            if hypothesis != None:
+                print(f"\n{hypothesis.hypstr}\n")
                 self.decoder.end_utt()
-                self.msg.data = temphyp.hypstr
+                self.msg.data = hypothesis.hypstr
                 self.node.publisher_.publish(self.msg)
                 self.node.get_logger().info('Publishing: "%s"' % self.msg)
                 self.decoder.start_utt()
-        
-
 
 def main(args=None):
     rclpy.init(args=args)
@@ -93,7 +92,7 @@ def main(args=None):
 
     voice_detector = VoiceDetector(args.model, args.lexicon, args.kwlist, args.pub)
 
-    voice_detector.timer_callback()
+    voice_detector.decode_voice()
     #rclpy.spin(voice_detector.node)
 
     # Destroy the node explicitly
