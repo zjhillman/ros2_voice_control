@@ -62,6 +62,7 @@ class VoiceDetector(object):
                 self.node.get_logger().info('Publishing: "%s"' % self.msg)
                 self.decoder.start_utt()
 
+
 def main(args=None):
     rclpy.init(args=args)
 
