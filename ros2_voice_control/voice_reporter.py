@@ -35,6 +35,11 @@ class VoiceReporter(object):
             Twist,
             'turtle1/cmd_vel',
             10)
+        self.node.timer = self.node.create_timer(0.5, self.timer_callback)
+
+    def timer_callback(self):
+
+        self.node.publisher.publish(self.msg)
 
 
     def listener_callback(self, msg):
@@ -73,7 +78,6 @@ class VoiceReporter(object):
         elif "stop" in msg.data:
             self.msg = Twist()
 
-        self.node.publisher.publish(self.msg)
 
 
 def main(args=None):
