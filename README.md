@@ -19,7 +19,7 @@ This script will not work if ROS2 is not installed
 
 The voice controller uses two nodes to run:  
 &emsp;voice_detector - run pocketsphinx, get voice commands as strings and publish to topic  
-&emsp;voice_reporter - list to voice_detector's topic and publish to '/cmd_vel'  
+&emsp;voice_reporter - listens to voice_detector's topic and publish to '/cmd_vel'  
   
 In one terminal, run 
 ```
