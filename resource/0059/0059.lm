@@ -1,0 +1,97 @@
+Language model created by QuickLM on Wed Feb  1 21:24:13 EST 2023
+Copyright (c) 1996-2010 Carnegie Mellon University and Alexander I. Rudnicky
+
+The model is in standard ARPA format, designed by Doug Paul while he was at MITRE.
+
+The code that was used to produce this language model is available in Open Source.
+Please visit http://www.speech.cs.cmu.edu/tools/ for more information
+
+The (fixed) discount mass is 0.5. The backoffs are computed using the ratio method.
+This model based on a corpus of 9 sentences and 22 words
+
+\data\
+ngram 1=22
+ngram 2=29
+ngram 3=23
+
+\1-grams:
+-0.9596 </s> -0.3010
+-0.9596 <s> -0.2505
+-1.9138 A -0.2957
+-1.9138 BACKWARD -0.2505
+-1.9138 BRING -0.2957
+-1.9138 CAN -0.2505
+-1.9138 COOKIE -0.2505
+-1.9138 FORWARD -0.2505
+-1.9138 FULL -0.2903
+-1.9138 HALF -0.2903
+-1.9138 IN -0.2957
+-1.9138 LEFT -0.2505
+-1.9138 ME -0.2957
+-1.6128 MOVE -0.2903
+-1.9138 PAPER -0.2957
+-1.9138 RIGHT -0.2505
+-1.6128 SPEED -0.2505
+-1.9138 STOP -0.2505
+-1.9138 THE -0.2957
+-1.9138 THROW -0.2957
+-1.9138 TRASH -0.2957
+-1.6128 TURN -0.2903
+
+\2-grams:
+-1.2553 <s> BRING 0.0000
+-1.2553 <s> FULL 0.0000
+-1.2553 <s> HALF 0.0000
+-0.9542 <s> MOVE 0.0000
+-1.2553 <s> STOP 0.0000
+-1.2553 <s> THROW 0.0000
+-0.9542 <s> TURN 0.0000
+-0.3010 A COOKIE 0.0000
+-0.3010 BACKWARD </s> -0.3010
+-0.3010 BRING ME 0.0000
+-0.3010 CAN </s> -0.3010
+-0.3010 COOKIE </s> -0.3010
+-0.3010 FORWARD </s> -0.3010
+-0.3010 FULL SPEED 0.0000
+-0.3010 HALF SPEED 0.0000
+-0.3010 IN THE 0.0000
+-0.3010 LEFT </s> -0.3010
+-0.3010 ME A 0.0000
+-0.6021 MOVE BACKWARD 0.0000
+-0.6021 MOVE FORWARD 0.0000
+-0.3010 PAPER IN 0.0000
+-0.3010 RIGHT </s> -0.3010
+-0.3010 SPEED </s> -0.3010
+-0.3010 STOP </s> -0.3010
+-0.3010 THE TRASH 0.0000
+-0.3010 THROW PAPER 0.0000
+-0.3010 TRASH CAN 0.0000
+-0.6021 TURN LEFT 0.0000
+-0.6021 TURN RIGHT 0.0000
+
+\3-grams:
+-0.3010 <s> BRING ME
+-0.3010 <s> FULL SPEED
+-0.3010 <s> HALF SPEED
+-0.6021 <s> MOVE BACKWARD
+-0.6021 <s> MOVE FORWARD
+-0.3010 <s> STOP </s>
+-0.3010 <s> THROW PAPER
+-0.6021 <s> TURN LEFT
+-0.6021 <s> TURN RIGHT
+-0.3010 A COOKIE </s>
+-0.3010 BRING ME A
+-0.3010 FULL SPEED </s>
+-0.3010 HALF SPEED </s>
+-0.3010 IN THE TRASH
+-0.3010 ME A COOKIE
+-0.3010 MOVE BACKWARD </s>
+-0.3010 MOVE FORWARD </s>
+-0.3010 PAPER IN THE
+-0.3010 THE TRASH CAN
+-0.3010 THROW PAPER IN
+-0.3010 TRASH CAN </s>
+-0.3010 TURN LEFT </s>
+-0.3010 TURN RIGHT </s>
+
+\end\
