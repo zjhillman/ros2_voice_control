@@ -55,7 +55,6 @@ class VoiceDetector(object):
 
             hypothesis = self.decoder.hyp()
             if hypothesis != None:
-                print(f"\n{hypothesis.hypstr}\n")
                 self.decoder.end_utt()
                 self.msg.data = hypothesis.hypstr
                 self.node.publisher_.publish(self.msg)

@@ -37,6 +37,7 @@ class VoiceReporter(object):
             10)
         self.node.timer = self.node.create_timer(0.5, self.timer_callback)
 
+
     def timer_callback(self):
 
         self.node.publisher.publish(self.msg)
