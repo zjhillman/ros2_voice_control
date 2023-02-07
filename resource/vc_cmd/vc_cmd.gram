@@ -1,0 +1,19 @@
+#JSGF V1.0;
+
+/**
+ * JSGF Grammar similar to kws example
+ */
+
+grammar voice_cmd;
+
+public <command> = [<request>] [<polite>] <action> [<direction>] [<speed>];
+
+<direction> = FORWARD | BACK | LEFT | RIGHT;
+
+<speed> = FULL SPEED | HALF SPEED;
+
+<action> = BRING ME | THROW THIS | MOVE
+
+<request> = CAN YOU | COULD YOU
+
+<polite> = PLEASE
