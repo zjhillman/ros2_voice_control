@@ -1,5 +1,5 @@
 move forward
-move backward
+move back
 turn left
 turn right
 stop
@@ -12,7 +12,8 @@ move full speed
 move half speed
 throw the paper in the trash
 throw the paper in the trash can
-throw the paper away
+throw this paper away
 throw the paper in the bin
 bring me a cookie
 bring me a biscuit
+could you please

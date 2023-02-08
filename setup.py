@@ -10,8 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name, ['voice_cmd.dic']),
-        ('share/' + package_name, ['voice_cmd.kwlist'])
+        ('share/' + package_name, ['vc_cmd.dic']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -22,8 +21,9 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'voice_detector = ros2_voice_control.voice_detector:main',
-        	'voice_reporter = ros2_voice_control.voice_reporter:main'
+        	'audio_stream = ros2_voice_control.audio_stream:main',
+            'decoder = ros2_voice_control.decoder:main',
+        	'relay = ros2_voice_control.command_relay:main'
         ],
     },
 )

@@ -6,14 +6,24 @@
 
 grammar voice_cmd;
 
-public <command> = [<request>] [<polite>] <action> [<direction>] [<speed>];
+public <command> = [<request>] [<polite>] <action_list>;
+
+<request> = CAN YOU | COULD YOU;
+
+<polite> = PLEASE;
+
+<action_list> = <movement> | <action>;
+
+<movement> = MOVE [<direction>] [<speed>];
 
 <direction> = FORWARD | BACK | LEFT | RIGHT;
 
 <speed> = FULL SPEED | HALF SPEED;
 
-<action> = BRING ME | THROW THIS | MOVE
+<action> = THROW THIS <object> [<preposition>] [<article>] <object> | BRING ME [<article>] <object>;
 
-<request> = CAN YOU | COULD YOU
+<article> = THE | A;
 
-<polite> = PLEASE
+<preposition> = IN;
+
+<object> = PAPER | TRASH | TRASH CAN | COOKIE | BISCUIT;
