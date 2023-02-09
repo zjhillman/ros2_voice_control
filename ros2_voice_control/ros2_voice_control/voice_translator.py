@@ -13,18 +13,20 @@
 # limitations under the License.
 
 import rclpy
+import argparse
+
 from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 
 
-class VoiceReporter(object):
+class VoiceTranslator(object):
 
-    def __init__(self):
+    def __init__(self, pub_):
         self.speed = 0.4
         self.msg = Twist()
-        self.node = rclpy.create_node('Voice_Reporter')
+        self.node = rclpy.create_node('Voice Translator')
         self.node.subscription = self.node.create_subscription(
             String,
             'voice_commands',
@@ -33,7 +35,7 @@ class VoiceReporter(object):
         self.node.subscription  # prevent unused variable warning
         self.node.publisher = self.node.create_publisher(
             Twist,
-            'turtle1/cmd_vel',
+            pub_,
             10)
         self.node.timer = self.node.create_timer(0.5, self.timer_callback)
 
@@ -82,16 +84,24 @@ class VoiceReporter(object):
 
 
 def main(args=None):
+    
+    parser = argparse.ArgumentParser(
+        description='Translates voice commands to turtlenot instructions')
+    parser.add_argument('--pub', type=str,
+        default='turtle1/cmd_vel',
+        help='''ROS publisher destination
+        (default: turtle1/cmd_vel)''')  # old mobile_base/commands/velocity
+    args = parser.parse_args()
     rclpy.init(args=args)
 
-    voice_reporter = VoiceReporter()
+    relay = VoiceTranslator(args.pub)
 
-    rclpy.spin(voice_reporter.node)
+    rclpy.spin(relay.node)
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
     # when the garbage collector destroys the node object)
-    voice_reporter.node.destroy_node()
+    relay.node.destroy_node()
     rclpy.shutdown()
 
 

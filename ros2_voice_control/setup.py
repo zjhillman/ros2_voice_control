@@ -22,8 +22,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'voice_detector = ros2_voice_control.voice_detector:main',
-        	'voice_reporter = ros2_voice_control.voice_reporter:main'
+        	'decoder = ros2_voice_control.voice_decoder:main',
+        	'translator = ros2_voice_control.voice_translator:main'
         ],
     },
 )

@@ -23,18 +23,17 @@ from std_msgs.msg import String
 from pocketsphinx import *
 
 
-class VoiceDetector(object):
+class VoiceDecoder(object):
     """
-    VoiceDetector uses pyaudio and pocketsphinx to listen for live input and supports
-    custom language models, command lists, and topics to publish to.
+    TODO
     """
-    def __init__(self, model, lexicon, kwlist, pub):
-        self.node = rclpy.create_node('Voice_Detector')
+    def __init__(self, hmm_, dict_, kws_):
+        self.node = rclpy.create_node('Voice Decoder')
         self.node.publisher_ = self.node.create_publisher(String, 'voice_commands', 10)
         self.msg = String()
 
         # init pocketsphinx
-        config = Config(hmm = model, dict = lexicon, kws = kwlist)
+        config = Config(hmm = hmm_, dict = dict_, kws = kws_)
         self.decoder = Decoder(config)
 
         # init pyaudio
@@ -72,28 +71,23 @@ def main(args=None):
     # look for custom model, dict, kwlist, and publisher location
     parser = argparse.ArgumentParser(
         description='Control ROS turtlebot using pocketsphinx.')
-    parser.add_argument('--model', type=str,
+    parser.add_argument('--hmm', type=str,
         default=get_model_path('en-us')  +  '/en-us',
         help='''acoustic model path
         (default: en-us''')
-    parser.add_argument('--lexicon', type=str,
+    parser.add_argument('--dict', type=str,
         default=current_dir+'voice_cmd.dic',
         help='''pronunciation dictionary
         (default: voice_cmd.dic)''')
-    parser.add_argument('--kwlist', type=str,
+    parser.add_argument('--kws', type=str,
         default=current_dir+'voice_cmd.kwlist',
         help='''keyword list with thresholds
         (default: voice_cmd.kwlist)''')
-    parser.add_argument('--pub', type=str,
-        default='turtle1/cmd_vel',
-        help='''ROS publisher destination
-        (default: turtle1/cmd_vel)''')  # old mobile_base/commands/velocity
     args = parser.parse_args()
 
-    voice_detector = VoiceDetector(args.model, args.lexicon, args.kwlist, args.pub)
+    decoder = VoiceDecoder(args.model, args.lexicon, args.kwlist)
 
-    voice_detector.decode_voice()
-    #rclpy.spin(voice_detector.node)
+    decoder.decode_voice()
 
     # Destroy the node explicitly
     # (optional - otherwise it will be done automatically
