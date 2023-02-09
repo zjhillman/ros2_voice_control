@@ -76,11 +76,11 @@ def main(args=None):
         help='''acoustic model path
         (default: en-us''')
     parser.add_argument('--dict', type=str,
-        default=current_dir+'voice_cmd.dic',
+        default=current_dir+'vc_cmd.dic',
         help='''pronunciation dictionary
         (default: voice_cmd.dic)''')
     parser.add_argument('--kws', type=str,
-        default=current_dir+'voice_cmd.kwlist',
+        default=current_dir+'vc_cmd.kwlist',
         help='''keyword list with thresholds
         (default: voice_cmd.kwlist)''')
     args = parser.parse_args()
