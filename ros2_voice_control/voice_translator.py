@@ -15,11 +15,15 @@
 import rclpy
 import argparse
 import os
+import colorama
+from colorama import Fore
 
 from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
+
+DEBUG = False
 
 
 class VoiceTranslator(object):
@@ -44,50 +48,66 @@ class VoiceTranslator(object):
         current_dir = os.path.dirname(os.path.realpath(__file__))
         current_dir = current_dir + "/../../../../share/ros2_voice_control/"
         corpus = open(current_dir + 'corpus.txt', 'r')
-        vc_cmd = corpus.read().splitlines()
-        print(vc_cmd)
+        self.vc_cmd = corpus.read().splitlines()
+        print(self.vc_cmd)
 
 
     def timer_callback(self):
-
         self.node.publisher.publish(self.msg)
 
 
     def listener_callback(self, msg):
-        self.node.get_logger().info(f'I heard: "{msg.data}"')
-        msg.data = msg.data.lower()
+        if DEBUG:
+            self.node.get_logger().info(f'I heard: "{msg.data}"')
+        print('You said: ' + Fore.CYAN + msg.data.lower() + Fore.RESET)
 
-        if "full speed" in msg.data:
-            if self.speed == 0.2:
-                self.msg.linear.x = self.msg.linear.x*2
-                self.msg.angular.z = self.msg.angular.z*2
-                self.speed = 0.4
-        if "half speed" in msg.data:
-            if self.speed == 0.4:
-                self.msg.linear.x = self.msg.linear.x/2
-                self.msg.angular.z = self.msg.angular.z/2
-                self.speed = 0.2
-        if "forward" in msg.data:
+        if msg.data[:-1] in self.vc_cmd:
+            self.process_command(msg.data[:-1])
+
+
+    def process_command(self, cmd):
+        if cmd == 'MOVE FORWARD':
             self.msg.linear.x = self.speed
             self.msg.angular.z = 0.0
-        elif "left" in msg.data:
-            if self.msg.linear.x != 0:
+        elif cmd == 'MOVE BACKWARD':
+            self.msg.linear.x = -self.speed
+            self.msg.angular.z = 0.0
+        elif cmd == 'TURN LEFT':
+            if self.msg.linear.x != 0.0:
                 if self.msg.angular.z < self.speed:
                     self.msg.angular.z += 0.05
             else:
                 self.msg.angular.z = self.speed*2
-        elif "right" in msg.data:
-            if self.msg.linear.x != 0:
+        elif cmd == 'TURN RIGHT':
+            if self.msg.linear.x != 0.0:
                 if self.msg.angular.z > -self.speed:
                     self.msg.angular.z -= 0.05
             else:
                 self.msg.angular.z = -self.speed*2
-        elif "back" in msg.data:
-            if self.msg.linear.x > 0:
-                self.msg.linear.x = -self.speed
-                self.msg.angular.z = 0.0
-        elif "stop" in msg.data:
+        elif cmd == 'FULL SPEED':
+            if self.speed == 0.2:
+                self.msg.linear.x = self.msg.linear.x*2
+                self.msg.angular.z = self.msg.angular.z*2
+                self.speed = 0.4
+        elif cmd == 'HALF SPEED':
+            if self.speed == 0.4:
+                self.msg.linear.x = self.msg.linear.x/2
+                self.msg.angular.z = self.msg.angular.z/2
+                self.speed = 0.2
+        elif cmd == 'STOP' or cmd == 'HALT':
             self.msg = Twist()
+        elif cmd == 'CAN YOU BRING ME A COOKIE':
+            print(Fore.RED + 'Got it' + Fore.RESET)
+        elif cmd == 'CAN YOU BRING ME A BISCUIT':
+            print(Fore.RED + 'What do you mean by "biscuit"?' + Fore.RESET)
+        elif cmd == 'CAN YOU THROW THIS PAPER IN THE TRASH':
+            print(Fore.RED + 'Got it' + Fore.RESET)
+        elif cmd == 'CAN YOU THROW THIS PAPER IN THE BIN':
+            print(Fore.RED + 'What do you mean by "bin"?' + Fore.RESET)
+        elif cmd == 'CAN YOU THROW THIS IN THE TRASH':
+            print(Fore.RED + 'What do you mean by "this"?' + Fore.RESET)
+        else:
+            print('ERROR: TODO')
 
 
 
