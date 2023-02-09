@@ -26,7 +26,7 @@ class VoiceTranslator(object):
     def __init__(self, pub_):
         self.speed = 0.4
         self.msg = Twist()
-        self.node = rclpy.create_node('Voice Translator')
+        self.node = rclpy.create_node('Voice_Translator')
         self.node.subscription = self.node.create_subscription(
             String,
             'voice_commands',

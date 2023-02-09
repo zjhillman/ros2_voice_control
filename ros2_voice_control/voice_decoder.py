@@ -28,7 +28,7 @@ class VoiceDecoder(object):
     TODO
     """
     def __init__(self, hmm_, dict_, kws_):
-        self.node = rclpy.create_node('Voice Decoder')
+        self.node = rclpy.create_node('Voice_Decoder')
         self.node.publisher_ = self.node.create_publisher(String, 'voice_commands', 10)
         self.msg = String()
 
@@ -85,7 +85,7 @@ def main(args=None):
         (default: voice_cmd.kwlist)''')
     args = parser.parse_args()
 
-    decoder = VoiceDecoder(args.model, args.lexicon, args.kwlist)
+    decoder = VoiceDecoder(args.hmm, args.dict, args.kws)
 
     decoder.decode_voice()
 
