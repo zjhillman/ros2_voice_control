@@ -14,6 +14,7 @@
 
 import rclpy
 import argparse
+import os
 
 from rclpy.node import Node
 
@@ -38,6 +39,13 @@ class VoiceTranslator(object):
             pub_,
             10)
         self.node.timer = self.node.create_timer(0.5, self.timer_callback)
+
+        
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        current_dir = current_dir + "/../../../../share/ros2_voice_control/"
+        corpus = open(current_dir + 'corpus.txt', 'r')
+        vc_cmd = corpus.read().splitlines()
+        print(vc_cmd)
 
 
     def timer_callback(self):
@@ -85,6 +93,7 @@ class VoiceTranslator(object):
 
 def main(args=None):
     
+    # parse for arguments
     parser = argparse.ArgumentParser(
         description='Translates voice commands to turtlenot instructions')
     parser.add_argument('--pub', type=str,
@@ -92,7 +101,8 @@ def main(args=None):
         help='''ROS publisher destination
         (default: turtle1/cmd_vel)''')  # old mobile_base/commands/velocity
     args = parser.parse_args()
-    rclpy.init(args=args)
+
+    rclpy.init(args=None)
 
     relay = VoiceTranslator(args.pub)
 
