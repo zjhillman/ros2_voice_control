@@ -43,23 +43,19 @@ class VoiceTranslator(object):
             pub_,
             10)
         self.node.timer = self.node.create_timer(0.5, self.timer_callback)
-
         
         current_dir = os.path.dirname(os.path.realpath(__file__))
         current_dir = current_dir + "/../../../../share/ros2_voice_control/"
         corpus = open(current_dir + 'corpus.txt', 'r')
         self.vc_cmd = corpus.read().splitlines()
-        print(self.vc_cmd)
-
-
-    def timer_callback(self):
-        self.node.publisher.publish(self.msg)
+        if DEBUG:
+            print(self.vc_cmd)
 
 
     def listener_callback(self, msg):
         if DEBUG:
             self.node.get_logger().info(f'I heard: "{msg.data}"')
-        print('You said: ' + Fore.CYAN + msg.data.lower() + Fore.RESET)
+        print('\nYou said: ' + Fore.CYAN + msg.data.lower() + Fore.RESET)
 
         if msg.data[:-1] in self.vc_cmd:
             self.process_command(msg.data[:-1])
@@ -97,19 +93,27 @@ class VoiceTranslator(object):
         elif cmd == 'STOP' or cmd == 'HALT':
             self.msg = Twist()
         elif cmd == 'CAN YOU BRING ME A COOKIE':
-            print(Fore.RED + 'Got it' + Fore.RESET)
+            self.turtlebot_say('Got it')
         elif cmd == 'CAN YOU BRING ME A BISCUIT':
-            print(Fore.RED + 'What do you mean by "biscuit"?' + Fore.RESET)
+            self.turtlebot_say('What do you mean by "biscuit"?')
         elif cmd == 'CAN YOU THROW THIS PAPER IN THE TRASH':
-            print(Fore.RED + 'Got it' + Fore.RESET)
+            self.turtlebot_say('Got it')
         elif cmd == 'CAN YOU THROW THIS PAPER IN THE BIN':
-            print(Fore.RED + 'What do you mean by "bin"?' + Fore.RESET)
+            self.turtlebot_say('What do you mean by "bin"?')
         elif cmd == 'CAN YOU THROW THIS IN THE TRASH':
-            print(Fore.RED + 'What do you mean by "this"?' + Fore.RESET)
+            self.turtlebot_say('What do you mean by "this"?')
         else:
+            self.msg = Twist()
             print('ERROR: TODO')
 
 
+    def turtlebot_say(self, response):
+        self.msg = Twist()
+        print('\n' + Fore.RED + response + Fore.RESET)
+
+
+    def timer_callback(self):
+        self.node.publisher.publish(self.msg)
 
 def main(args=None):
     
