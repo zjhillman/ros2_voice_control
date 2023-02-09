@@ -10,8 +10,9 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name, ['voice_cmd.dic']),
-        ('share/' + package_name, ['voice_cmd.kwlist'])
+        ('share/' + package_name, ['vc_cmd.dic']),
+        ('share/' + package_name, ['vc_cmd.kwlist']),
+        ('share/' + package_name, ['corpus.txt']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
