@@ -15,7 +15,6 @@
 import rclpy
 import argparse
 import os
-import colorama
 from colorama import Fore
 
 from rclpy.node import Node
@@ -29,7 +28,7 @@ DEBUG = False
 class VoiceTranslator(object):
 
     def __init__(self, pub_):
-        self.speed = 0.4
+        self.speed = 0.2
         self.msg = Twist()
         self.node = rclpy.create_node('Voice_Translator')
         self.node.subscription = self.node.create_subscription(
@@ -71,13 +70,13 @@ class VoiceTranslator(object):
         elif cmd == 'TURN LEFT':
             if self.msg.linear.x != 0.0:
                 if self.msg.angular.z < self.speed:
-                    self.msg.angular.z += 0.05
+                    self.msg.angular.z += 0.1
             else:
                 self.msg.angular.z = self.speed*2
         elif cmd == 'TURN RIGHT':
             if self.msg.linear.x != 0.0:
                 if self.msg.angular.z > -self.speed:
-                    self.msg.angular.z -= 0.05
+                    self.msg.angular.z -= 0.1
             else:
                 self.msg.angular.z = -self.speed*2
         elif cmd == 'FULL SPEED':
