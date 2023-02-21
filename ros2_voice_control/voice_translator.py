@@ -101,9 +101,16 @@ class VoiceTranslator(object):
             self.turtlebot_say('What do you mean by "bin"?')
         elif cmd == 'CAN YOU THROW THIS IN THE TRASH':
             self.turtlebot_say('What do you mean by "this"?')
+        elif cmd == 'CAN YOU GET ME A POP':
+            self.turtlebot_say('What do you mean by "pop"?')
+        elif cmd == 'CAN YOU GET ME A SODA':
+            self.turtlebot_say('I\'m on it!')
+        elif cmd == 'CAN YOU GET ME A SOFT DRINK':
+            self.turtlebot_say('What do you mean by "soft drink"?')
+        elif cmd in ['I MEAN A COOKIE', 'I MEAN A SODA','I MEAN THE TRASH CAN']:
+            self.turtlebot_say('Oh! On it.')
         else:
-            self.msg = Twist()
-            print('ERROR: TODO')
+            self.turtlebot_say('Sorry, what did you say?')
 
 
     def turtlebot_say(self, response):
