@@ -26,11 +26,11 @@ The voice controller uses two nodes to run:
   
 In one terminal, run 
 ```
-ros2 run ros2_voice_control voice_detector
+ros2 run ros2_voice_control decoder
 ```
 And in another, enter
 ```
-ros2 run ros2_voice_control voice_reporter
+ros2 run ros2_voice_control translator
 ```
 
 ### Defaults
