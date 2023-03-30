@@ -121,8 +121,8 @@ class VoiceTranslator(object):
     def timer_callback(self):
         self.node.publisher.publish(self.msg)
 
+
 def main(args=None):
-    
     # parse for arguments
     parser = argparse.ArgumentParser(
         description='Translates voice commands to turtlenot instructions')
@@ -133,9 +133,7 @@ def main(args=None):
     args = parser.parse_args()
 
     rclpy.init(args=None)
-
     relay = VoiceTranslator(args.pub)
-
     rclpy.spin(relay.node)
 
     # Destroy the node explicitly
