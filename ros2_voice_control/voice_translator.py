@@ -79,12 +79,12 @@ class VoiceTranslator(object):
                     self.msg.angular.z -= 0.1
             else:
                 self.msg.angular.z = -self.speed*2
-        elif cmd == 'FULL SPEED':
+        elif cmd == 'GO FULL SPEED':
             if self.speed == 0.2:
                 self.msg.linear.x = self.msg.linear.x*2
                 self.msg.angular.z = self.msg.angular.z*2
                 self.speed = 0.4
-        elif cmd == 'HALF SPEED':
+        elif cmd == 'GO HALF SPEED':
             if self.speed == 0.4:
                 self.msg.linear.x = self.msg.linear.x/2
                 self.msg.angular.z = self.msg.angular.z/2

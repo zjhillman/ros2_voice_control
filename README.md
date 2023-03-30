@@ -1,9 +1,11 @@
 # ros2_voice_control
+
 ROS2 Voice Control is a ros2 package written in python. This package let's you give voice commands to a turtlebot or any topic you choose
 
 ## Ubuntu Installation
 
 ### Install dependencies
+
 Use the following commands to ensure you have python3 and the tools to build pocketshinx. The voice controller uses pocketsphinx and pyaudio to get live input
 ```
 sudo apt install python3 cython3
@@ -12,6 +14,7 @@ pip3 install pocketsphinx
 ```
 
 ### Install ROS2
+
 Currently, ROS Humble is supported but any version of ROS2 should work.
 This script will not work if ROS2 is not installed
 
