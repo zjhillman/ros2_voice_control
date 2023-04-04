@@ -40,6 +40,7 @@ class VoiceDecoder(object):
         self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=1,
                         rate=16000, input=True, frames_per_buffer=1024)
 
+
     def decode_voice(self):
         # start pocketsphinx and pyaudio
         self.stream.start_stream()
