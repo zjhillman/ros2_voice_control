@@ -109,7 +109,7 @@ class VoiceTranslator(object):
         elif cmd == 'CAN YOU GET ME A SOFT DRINK':
             self.turtlebot_say('What do you mean by "soft drink"?')
         elif cmd in ['I MEAN A COOKIE', 'I MEAN A SODA','I MEAN THE TRASH CAN']:
-            seed = random()
+            seed = random.random()
             generic_response = ['Oh! On it.', 'Okay, that makes sense', 'Okay', 'Alright']
             if seed < 0.25:
                 self.turtlebot_say(generic_response[0])
