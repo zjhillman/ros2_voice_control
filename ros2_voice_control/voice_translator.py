@@ -14,19 +14,19 @@
 
 import rclpy
 import argparse
+import pyttsx3 as tts
 import os
 from colorama import Fore
-
 from rclpy.node import Node
-
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
 
 DEBUG = False
+speaker = tts.init();
+speaker.setProperty('rate', 180)
 
 
 class VoiceTranslator(object):
-
     def __init__(self, pub_):
         self.speed = 0.2
         self.msg = Twist()
@@ -115,7 +115,9 @@ class VoiceTranslator(object):
 
     def turtlebot_say(self, response):
         self.msg = Twist()
+        speaker.say(response)
         print('\n' + Fore.RED + response + Fore.RESET)
+        speaker.runAndWait()
 
 
     def timer_callback(self):
