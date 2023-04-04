@@ -16,6 +16,7 @@ import rclpy
 import argparse
 import pyttsx3 as tts
 import os
+import random
 from colorama import Fore
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -108,7 +109,16 @@ class VoiceTranslator(object):
         elif cmd == 'CAN YOU GET ME A SOFT DRINK':
             self.turtlebot_say('What do you mean by "soft drink"?')
         elif cmd in ['I MEAN A COOKIE', 'I MEAN A SODA','I MEAN THE TRASH CAN']:
-            self.turtlebot_say('Oh! On it.')
+            seed = random()
+            generic_response = ['Oh! On it.', 'Okay, that makes sense', 'Okay', 'Alright']
+            if seed < 0.25:
+                self.turtlebot_say(generic_response[0])
+            elif seed < 0.50:
+                self.turtlebot_say(generic_response[1])
+            elif seed < 0.75:
+                self.turtlebot_say(generic_response[2])
+            else:
+                self.turtlebot_say(generic_response[3])
         else:
             self.turtlebot_say('Sorry, what did you say?')
 
